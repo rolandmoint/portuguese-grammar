@@ -1,4 +1,26 @@
 {
+  "verbs": [
+    {"word": "Falar", "type": "ar", "meaning": "To speak (說話)"},
+    {"word": "Estudar", "type": "ar", "meaning": "To study (學習)"},
+    {"word": "Comprar", "type": "ar", "meaning": "To buy (買)"},
+    {"word": "Gostar", "type": "ar", "meaning": "To like (喜歡)"},
+    {"word": "Caminhar", "type": "ar", "meaning": "To walk (走路)"},
+    {"word": "Trabalhar", "type": "ar", "meaning": "To work (工作)"},
+    {"word": "Cantar", "type": "ar", "meaning": "To sing (唱歌)"},
+    {"word": "Comer", "type": "er", "meaning": "To eat (吃)"},
+    {"word": "Beber", "type": "er", "meaning": "To drink (喝)"},
+    {"word": "Aprender", "type": "er", "meaning": "To learn (學習)"},
+    {"word": "Escrever", "type": "er", "meaning": "To write (寫)"},
+    {"word": "Vender", "type": "er", "meaning": "To sell (賣)"},
+    {"word": "Correr", "type": "er", "meaning": "To run (跑步)"},
+    {"word": "Abrir", "type": "ir", "meaning": "To open (開)"},
+    {"word": "Partir", "type": "ir", "meaning": "To split/leave (離開/切開)"},
+    {"word": "Assistir", "type": "ir", "meaning": "To watch (觀看)"},
+    {"word": "Decidir", "type": "ir", "meaning": "To decide (決定)"},
+    {"word": "Dividir", "type": "ir", "meaning": "To divide (分配)"},
+    {"word": "Permitir", "type": "ir", "meaning": "To allow (允許)"},
+    {"word": "Desistir", "type": "ir", "meaning": "To give up (放棄)"}
+  ],
   "regular_rules": {
     "ar": {
       "presente": ["o", "as", "a", "amos", "am"],

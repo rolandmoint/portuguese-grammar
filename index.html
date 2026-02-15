@@ -3,139 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portuguese Verb Engine v3</title>
+    <title>PT Verb Dictionary & Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --pt-blue: #0026a1; --pt-red: #da121a; }
-        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; color: #1e293b; min-height: 100vh; }
-        .control-panel { background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,38,161,0.05); border: 1px solid #f1f5f9; }
-        .tense-btn { transition: all 0.2s; border: 2px solid transparent; background: #f8fafc; }
-        .tense-btn:hover { border-color: var(--pt-blue); }
-        .tense-btn.active { background-color: var(--pt-blue); color: white; transform: scale(1.05); font-weight: bold; }
-        .ending-btn { transition: all 0.2s; border: 4px solid transparent; }
-        .ending-active { border-color: var(--pt-blue); background: white !important; transform: scale(1.02); }
-        .example-card { border-left: 4px solid #e2e8f0; transition: all 0.2s; }
-        .example-card:hover { border-left-color: var(--pt-blue); background: #f1f5f9; }
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; color: #1e293b; min-height: 100vh; }
+        .glass-panel { background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,38,161,0.05); }
+        .tab-btn { transition: all 0.2s; border-bottom: 4px solid transparent; }
+        .tab-active { border-bottom-color: var(--pt-blue); color: var(--pt-blue); font-weight: 900; }
+        .verb-card { transition: all 0.2s; cursor: pointer; }
+        .verb-card:hover { transform: translateY(-2px); border-color: var(--pt-blue); }
         .suffix { color: var(--pt-red); font-weight: 900; text-decoration: underline; }
+        .audio-wave { display: none; width: 20px; height: 20px; }
     </style>
 </head>
 <body class="p-4 md:p-12">
 
-    <header class="max-w-5xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-end gap-6 border-b border-slate-200 pb-8">
+    <header class="max-w-6xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-center bg-white p-8 rounded-[32px] shadow-sm">
         <div>
-            <h1 class="text-4xl font-black tracking-tighter text-blue-950 flex items-center gap-3 italic">
-                <span class="text-5xl">🇵🇹</span> PORTUGUESE VERB HUB
-            </h1>
-            <p class="text-blue-600 font-medium mt-1">Smarter Patterns for Regular Verbs</p>
+            <h1 class="text-3xl font-black tracking-tighter text-blue-900 italic uppercase">🇵🇹 Portuguese Master</h1>
+            <p class="text-slate-400 font-medium">Interactive Regular Verb Dictionary & Tense Engine</p>
         </div>
-        <div class="text-right font-mono text-[10px] text-slate-400 uppercase tracking-widest leading-tight">
-            SECURED_PROTOCOL_V3<br>BILINGUAL_ENGINE_ON
-        </div>
+        <nav class="flex gap-8 mt-6 md:mt-0">
+            <button onclick="showSection('engine')" id="tab-engine" class="tab-btn pb-2 text-sm font-bold uppercase tracking-widest tab-active">Tense Engine</button>
+            <button onclick="showSection('dict')" id="tab-dict" class="tab-btn pb-2 text-sm font-bold uppercase tracking-widest">Verb Dictionary</button>
+        </nav>
     </header>
 
-    <main id="main-app" class="max-w-5xl mx-auto space-y-10">
+    <main class="max-w-6xl mx-auto">
         
-        <!-- STEP 1: SELECT ENDING -->
-        <section class="control-panel p-8">
-            <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 inline-block bg-slate-50 px-3 py-1 rounded">Step 1: Choose Type</h2>
-            <div class="grid grid-cols-3 gap-4 md:gap-8 mb-10">
-                <button onclick="pickEnding('ar', this)" class="ending-btn p-8 md:p-12 rounded-3xl bg-blue-50 text-blue-700 text-3xl md:text-5xl font-black">-AR</button>
-                <button onclick="pickEnding('er', this)" class="ending-btn p-8 md:p-12 rounded-3xl bg-emerald-50 text-emerald-700 text-3xl md:text-5xl font-black">-ER</button>
-                <button onclick="pickEnding('ir', this)" class="ending-btn p-8 md:p-12 rounded-3xl bg-rose-50 text-rose-700 text-3xl md:text-5xl font-black">-IR</button>
-            </div>
+        <!-- SECTION: TENSE ENGINE -->
+        <div id="section-engine" class="space-y-10">
+            <section class="glass-panel p-8">
+                <div class="grid grid-cols-3 gap-4 md:gap-8 mb-10">
+                    <button onclick="pickEnd('ar', this)" class="end-btn p-8 rounded-3xl bg-blue-50 text-blue-700 text-3xl font-black border-4 border-transparent">-AR</button>
+                    <button onclick="pickEnd('er', this)" class="end-btn p-8 rounded-3xl bg-emerald-50 text-emerald-700 text-3xl font-black border-4 border-transparent">-ER</button>
+                    <button onclick="pickEnd('ir', this)" class="end-btn p-8 rounded-3xl bg-rose-50 text-rose-700 text-3xl font-black border-4 border-transparent">-IR</button>
+                </div>
+                <div class="flex flex-wrap gap-2" id="tense-selector"></div>
+            </section>
 
-            <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 inline-block bg-slate-50 px-3 py-1 rounded">Step 2: Choose Tense</h2>
-            <div class="flex flex-wrap gap-3" id="tense-selector">
-                <button onclick="pickTense('presente', this)" class="tense-btn px-6 py-3 rounded-2xl font-bold text-sm shadow-sm">Presente (現在式)</button>
-                <button onclick="pickTense('preterito', this)" class="tense-btn px-6 py-3 rounded-2xl font-bold text-sm shadow-sm">Pretérito (過去應)</button>
-                <button onclick="pickTense('futuro', this)" class="tense-btn px-6 py-3 rounded-2xl font-bold text-sm shadow-sm">Futuro (未來式)</button>
-            </div>
-        </section>
+            <section id="results" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="bg-white p-10 rounded-[40px] shadow-xl border border-blue-50">
+                    <h2 id="res-title" class="text-2xl font-black text-blue-900 mb-8 uppercase italic"></h2>
+                    <div id="conj-list" class="space-y-4"></div>
+                </div>
+                <div id="ex-list" class="space-y-4"></div>
+            </section>
+        </div>
 
-        <!-- RESULTS -->
-        <section id="results" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <div class="bg-white p-8 rounded-[32px] border border-blue-50 shadow-sm relative overflow-hidden">
-                <h2 id="result-tense-title" class="text-3xl font-black text-blue-900 mb-8 uppercase tracking-tighter italic"></h2>
-                <div id="conjugation-list" class="space-y-3"></div>
-                <div class="absolute -right-8 -bottom-8 text-slate-50 text-[120px] font-black select-none pointer-events-none uppercase opacity-50" id="bg-indicator">AR</div>
-            </div>
-
-            <div class="space-y-4">
-                <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] pl-4">Realworld Examples (5 Cases)</h2>
-                <div id="example-list" class="space-y-3"></div>
-            </div>
-        </section>
+        <!-- SECTION: DICTIONARY -->
+        <div id="section-dict" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
 
     </main>
 
     <script>
-        let db = null;
-        let selectedEnding = null;
-        let selectedTense = null;
+        let db = null, selEnd = null, selTense = null;
         const audio = new Audio();
+        const synth = window.speechSynthesis;
 
         async function init() {
-            try {
-                // cache-busting to ensure fresh data
-                const res = await fetch('portuguese.json?v=' + Date.now());
-                db = await res.json();
-            } catch (e) {
-                document.getElementById('main-app').innerHTML = `<div class="bg-red-50 p-12 rounded-3xl text-red-500 font-bold border border-red-100 text-center uppercase">CRITICAL_LOAD_ERROR: Check Database Connection.</div>`;
-            }
+            const r = await fetch('portuguese.json?v='+Date.now());
+            db = await r.json();
+            const container = document.getElementById('tense-selector');
+            container.innerHTML = db.modules.map(m => `<button onclick="pickTense('${m.tense}', this)" class="tense-btn px-6 py-3 rounded-xl bg-white border border-slate-100 text-slate-500 font-bold text-xs shadow-sm uppercase">${m.tense}</button>`).join('');
+            
+            document.getElementById('section-dict').innerHTML = db.verbs.map(v => `
+                <div class="verb-card bg-white p-6 rounded-2xl border border-slate-100 shadow-sm" onclick="speak('${v.word}')">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xl font-black text-blue-900">${v.word}</span>
+                        <span class="text-[9px] font-bold px-2 py-0.5 bg-slate-100 rounded uppercase">-${v.type}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 font-medium italic">${v.meaning}</p>
+                </div>
+            `).join('');
         }
 
-        function pickEnding(end, btn) {
-            selectedEnding = end;
-            document.querySelectorAll('.ending-btn').forEach(b => b.classList.remove('ending-active'));
-            btn.classList.add('ending-active');
-            update();
+        function showSection(id) {
+            document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
+            document.getElementById('section-' + id).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
+            document.getElementById('tab-' + id).classList.add('tab-active');
+        }
+
+        function pickEnd(end, btn) {
+            selEnd = end;
+            document.querySelectorAll('.end-btn').forEach(b => b.style.borderColor = 'transparent');
+            btn.style.borderColor = '#0026a1'; update();
         }
 
         function pickTense(tense, btn) {
-            selectedTense = tense;
-            document.querySelectorAll('.tense-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            update();
+            selTense = tense;
+            document.querySelectorAll('.tense-btn').forEach(b => b.classList.remove('bg-blue-900', 'text-white'));
+            btn.classList.add('bg-blue-900', 'text-white'); update();
         }
 
         function update() {
-            if (!selectedEnding || !selectedTense) return;
+            if(!selEnd || !selTense) return;
             document.getElementById('results').classList.remove('hidden');
-            
-            const rules = db.regular_rules[selectedEnding][selectedTense];
-            const displayTitle = selectedTense.toUpperCase();
-            document.getElementById('result-tense-title').innerText = displayTitle;
-            document.getElementById('bg-indicator').innerText = selectedEnding;
-            
+            const rules = db.regular_rules[selEnd][selTense.includes('現在') ? 'presente' : (selTense.includes('過去') ? 'preterito' : 'futuro')];
+            document.getElementById('res-title').innerText = selTense;
             const pronouns = ["Eu", "Tu", "Ele/Ela", "Nós", "Eles/Elas"];
-            document.getElementById('conjugation-list').innerHTML = pronouns.map((p, i) => `
-                <div class="flex justify-between items-center p-5 bg-slate-50 rounded-2xl border border-transparent hover:border-blue-200 transition-all group">
-                    <span class="font-bold text-slate-400 text-sm uppercase tracking-widest">${p}</span>
-                    <button onclick="speak('Stem-${rules[i]}')" class="text-2xl font-black text-blue-900 group-hover:text-blue-600 transition-colors">
-                        —<span class="suffix">${rules[i]}</span> <span class="text-xs ml-2 opacity-30">🔊</span>
-                    </button>
-                </div>
+            document.getElementById('conj-list').innerHTML = pronouns.map((p, i) => `
+                <button onclick="speak('Verbo-${rules[i]}')" class="w-full flex justify-between items-center p-5 bg-slate-50 rounded-2xl hover:bg-blue-50 transition-all uppercase">
+                    <span class="text-[10px] font-black text-slate-400">${p}</span>
+                    <span class="text-xl font-black text-blue-900">—<span class="suffix">${rules[i]}</span> 🔊</span>
+                </button>
             `).join('');
-
-            // Map English tense keys to Portuguese JSON modules
-            const tenseMap = {"presente": "Presente (現在式)", "preterito": "Pretérito Perfeito (過去式)", "futuro": "Futuro (未來式)"};
-            const examples = db.modules.find(m => m.tense === tenseMap[selectedTense]).examples;
-            
-            document.getElementById('example-list').innerHTML = examples.map(ex => `
-                <div class="example-card bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <div class="flex justify-between items-start gap-4">
-                        <p class="text-lg font-bold text-slate-800 leading-tight">${ex.pt}</p>
-                        <button onclick="speak('${ex.pt.replace(/'/g,"\\'")}')" class="bg-blue-900 text-white rounded-full p-2.5 shadow-lg active:scale-95 transition-transform flex items-center justify-center min-w-[32px]">🔊</button>
+            const examples = db.modules.find(m => m.tense === selTense).examples;
+            document.getElementById('ex-list').innerHTML = examples.map(ex => `
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-50 flex justify-between items-start gap-4" onclick="speak('${ex.pt.replace(/'/g,"\\'")}')">
+                    <div>
+                        <p class="text-lg font-bold text-slate-800">${ex.pt}</p>
+                        <p class="text-[10px] text-slate-400 italic mt-2">${ex.en}</p>
                     </div>
-                    <p class="mt-2 text-xs text-slate-400 font-medium italic border-t border-slate-50 pt-2">${ex.en}</p>
+                    <span class="bg-blue-900 text-white p-2 rounded-full text-xs">🔊</span>
                 </div>
             `).join('');
         }
 
+        // 🔊 HYBRID AUDIO SYSTEM: Cloud Primary + Native Fallback
         function speak(text) {
+            const clean = text.replace(/Verbo-/g, '');
+            // 1. Try Cloud Audio (Natural)
             audio.pause();
-            audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=pt-PT&q=${encodeURIComponent(text.replace(/Stem-/g, ''))}`;
-            audio.play().catch(e => console.warn(e));
+            audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=pt-PT&q=${encodeURIComponent(clean)}`;
+            
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.warn("Cloud Audio Blocked. Using Native Engine.");
+                    // 2. Immediate Native Fallback (Guaranteed Sound)
+                    synth.cancel();
+                    const u = new SpeechSynthesisUtterance(clean);
+                    u.lang = 'pt-PT'; u.rate = 0.8;
+                    synth.speak(u);
+                });
+            }
         }
 
         init();
