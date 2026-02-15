@@ -1,58 +1,51 @@
-[
-  {
-    "tense": "Presente (現在式)",
-    "usage": "Used for current actions or general truths.",
-    "verb": "Ser (To be - permanent)",
-    "conjugation": [
-      {"person": "Eu (I)", "form": "sou"},
-      {"person": "Tu (You)", "form": "és"},
-      {"person": "Ele/Ela (He/She)", "form": "é"},
-      {"person": "Nós (We)", "form": "somos"},
-      {"person": "Eles/Elas (They)", "form": "são"}
-    ],
-    "example": "Eu sou de Portugal.",
-    "translation": "I am from Portugal. (我是葡萄牙人。)"
+{
+  "regular_rules": {
+    "ar": {
+      "presente": ["o", "as", "a", "amos", "am"],
+      "preterito": ["ei", "aste", "ou", "ámos", "aram"],
+      "futuro": ["arei", "arás", "ará", "aremos", "arão"]
+    },
+    "er": {
+      "presente": ["o", "es", "e", "emos", "em"],
+      "preterito": ["i", "este", "eu", "emos", "eram"],
+      "futuro": ["erei", "erás", "erá", "eremos", "erão"]
+    },
+    "ir": {
+      "presente": ["o", "es", "e", "imos", "em"],
+      "preterito": ["i", "iste", "iu", "imos", "iram"],
+      "futuro": ["irei", "irás", "irá", "iremos", "irão"]
+    }
   },
-  {
-    "tense": "Pretérito Perfeito (過去完成式)",
-    "usage": "Used for actions completed in the past.",
-    "verb": "Ir (To go)",
-    "conjugation": [
-      {"person": "Eu", "form": "fui"},
-      {"person": "Tu", "form": "foste"},
-      {"person": "Ele/Ela", "form": "foi"},
-      {"person": "Nós", "form": "fomos"},
-      {"person": "Eles/Elas", "form": "foram"}
-    ],
-    "example": "Ontem eu fui ao mercado.",
-    "translation": "Yesterday I went to the market. (昨天我去了市場。)"
-  },
-  {
-    "tense": "Futuro (未來式)",
-    "usage": "Used for actions that will happen.",
-    "verb": "Comer (To eat)",
-    "conjugation": [
-      {"person": "Eu", "form": "comerei"},
-      {"person": "Tu", "form": "comerás"},
-      {"person": "Ele/Ela", "form": "comerá"},
-      {"person": "Nós", "form": "comeremos"},
-      {"person": "Eles/Elas", "form": "comerão"}
-    ],
-    "example": "Amanhã comerei peixe.",
-    "translation": "Tomorrow I will eat fish. (明天我會吃魚。)"
-  },
-  {
-    "tense": "Imperfeito (過去未完成式)",
-    "usage": "Used for habitual past actions or descriptions.",
-    "verb": "Ter (To have)",
-    "conjugation": [
-      {"person": "Eu", "form": "tinha"},
-      {"person": "Tu", "form": "tinhas"},
-      {"person": "Ele/Ela", "form": "tinha"},
-      {"person": "Nós", "form": "tínhamos"},
-      {"person": "Eles/Elas", "form": "tinham"}
-    ],
-    "example": "Quando eu era criança, tinha um cão.",
-    "translation": "When I was a child, I had a dog. (當我是小孩時，我有一隻狗。)"
-  }
-]
+  "modules": [
+    {
+      "tense": "Presente (現在式)",
+      "examples": [
+        {"pt": "Eu estudo todos os dias.", "en": "I study every day. (我每天學習。)"},
+        {"pt": "Ela come uma maçã.", "en": "She eats an apple. (她吃一個蘋果。)"},
+        {"pt": "Nós abrimos a janela.", "en": "We open the window. (我們打開窗戶。)"},
+        {"pt": "Eles falam português.", "en": "They speak Portuguese. (他們說葡萄牙語。)"},
+        {"pt": "Tu bebes água fresca.", "en": "You drink fresh water. (你喝清涼的水。)"}
+      ]
+    },
+    {
+      "tense": "Pretérito Perfeito (過去式)",
+      "examples": [
+        {"pt": "Ontem eu caminhei no parque.", "en": "Yesterday I walked in the park. (昨天我在公園散步。)"},
+        {"pt": "Ela escreveu uma carta.", "en": "She wrote a letter. (她寫了一封信。)"},
+        {"pt": "Nós partimos o bolo.", "en": "We split the cake. (我們切開了蛋糕。)"},
+        {"pt": "Eles compraram um carro.", "en": "They bought a car. (他們買了一輛車。)"},
+        {"pt": "Tu terminaste o trabalho.", "en": "You finished the work. (你完成了工作。)"}
+      ]
+    },
+    {
+      "tense": "Futuro (未來式)",
+      "examples": [
+        {"pt": "Eu viajarei para Macau.", "en": "I will travel to Macau. (我會去澳門旅遊。)"},
+        {"pt": "Ela aprenderá a cantar.", "en": "She will learn to sing. (她會學習唱歌。)"},
+        {"pt": "Nós venderemos a casa.", "en": "We will sell the house. (我們會賣掉房子。)"},
+        {"pt": "Eles ganharão o jogo.", "en": "They will win the game. (他們會贏得比賽。)"},
+        {"pt": "Tu visitarás o museu.", "en": "You will visit the museum. (你會參觀博物館。)"}
+      ]
+    }
+  ]
+}
