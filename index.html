@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portuguese Grammar Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f0f4f8; font-family: 'Inter', sans-serif; color: #1a365d; }
+        .portugal-blue { background-color: #0056b3; }
+        .tense-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-left: 6px solid #0056b3; }
+        .tense-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,86,179,0.1); }
+        .pronounce-btn { cursor: pointer; transition: opacity 0.2s; }
+        .pronounce-btn:hover { opacity: 0.7; }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+
+    <header class="max-w-4xl mx-auto mb-12 text-center">
+        <h1 class="text-4xl font-extrabold tracking-tight text-blue-900 mb-2 uppercase">Portuguese Grammar Hub</h1>
+        <p class="text-blue-600 font-medium italic">Master Portuguese Tenses with Audio Support</p>
+    </header>
+
+    <main id="app" class="max-w-4xl mx-auto space-y-8">
+        <!-- Dynamic Content Injected Here -->
+        <div class="text-center py-20 text-slate-400">Loading modules...</div>
+    </main>
+
+    <footer class="max-w-4xl mx-auto mt-20 py-8 border-t border-blue-100 text-center text-blue-300 text-xs uppercase tracking-widest font-bold">
+        Automated Language Learning System • Secured Feed
+    </footer>
+
+    <script>
+        const audio = new Audio();
+
+        async function init() {
+            try {
+                const response = await fetch('portuguese.json');
+                const data = await response.json();
+                render(data);
+            } catch (error) {
+                document.getElementById('app').innerHTML = "ERROR_LOADING_DATA";
+            }
+        }
+
+        function speak(text) {
+            // High quality Portuguese (Portugal) pronunciation
+            audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=pt-PT&q=${encodeURIComponent(text)}`;
+            audio.play();
+        }
+
+        function render(data) {
+            const container = document.getElementById('app');
+            container.innerHTML = data.map(item => `
+                <section class="bg-white rounded-3xl p-8 shadow-sm tense-card">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h2 class="text-2xl font-black text-blue-900 uppercase">${item.tense}</h2>
+                            <p class="text-sm text-slate-400 font-medium italic mt-1">${item.usage}</p>
+                        </div>
+                        <span class="bg-blue-50 text-blue-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">${item.verb}</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
+                        ${item.conjugation.map(c => `
+                            <div class="bg-slate-50 p-4 rounded-2xl text-center border border-slate-100">
+                                <div class="text-[10px] text-slate-400 font-bold uppercase mb-1">${c.person}</div>
+                                <div class="text-lg font-black text-blue-700 pronounce-btn" onclick="speak('${c.form}')">${c.form} 🔊</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="bg-blue-900 text-white p-6 rounded-2xl relative overflow-hidden">
+                        <div class="relative z-10">
+                            <label class="text-[10px] font-black uppercase tracking-[0.2em] opacity-50 mb-2 block">Practical Example</label>
+                            <div class="text-xl md:text-2xl font-bold mb-2 flex items-center gap-3">
+                                <span>${item.example}</span>
+                                <button onclick="speak('${item.example.replace(/'/g,"\\'")}')" class="bg-white/20 hover:bg-white/30 p-2 rounded-full text-xs transition-colors">🔊</button>
+                            </div>
+                            <p class="text-blue-200 text-sm italic font-medium leading-relaxed">${item.translation}</p>
+                        </div>
+                        <div class="absolute -right-4 -bottom-4 text-white/5 text-8xl font-black italic select-none uppercase">${item.verb.split(' ')[0]}</div>
+                    </div>
+                </section>
+            `).join('');
+        }
+
+        init();
+    </script>
+</body>
+</html>
