@@ -3,147 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT Verb Dictionary & Engine</title>
+    <title>Portuguese Master 2.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --pt-blue: #0026a1; --pt-red: #da121a; }
-        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; color: #1e293b; min-height: 100vh; }
-        .glass-panel { background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,38,161,0.05); }
-        .tab-btn { transition: all 0.2s; border-bottom: 4px solid transparent; }
-        .tab-active { border-bottom-color: var(--pt-blue); color: var(--pt-blue); font-weight: 900; }
-        .verb-card { transition: all 0.2s; cursor: pointer; }
-        .verb-card:hover { transform: translateY(-2px); border-color: var(--pt-blue); }
-        .suffix { color: var(--pt-red); font-weight: 900; text-decoration: underline; }
-        .audio-wave { display: none; width: 20px; height: 20px; }
+        :root { --pt-blue: #0026a1; --pt-white: #ffffff; --pt-red: #da121a; }
+        body { background-color: #f0f4f8; font-family: 'Inter', sans-serif; color: #1a365d; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); }
+        .tab-btn { transition: all 0.2s; border-bottom: 4px solid transparent; opacity: 0.5; }
+        .tab-active { border-bottom-color: var(--pt-blue); opacity: 1; font-weight: 900; color: var(--pt-blue); }
+        .pronoun-bubble { font-size: 10px; font-weight: 900; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase; }
+        .correct { color: #10b981 !important; border-color: #10b981 !important; background: #ecfdf5; }
+        .wrong { color: #ef4444 !important; border-color: #ef4444 !important; background: #fef2f2; }
     </style>
 </head>
 <body class="p-4 md:p-12">
 
-    <header class="max-w-6xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-center bg-white p-8 rounded-[32px] shadow-sm">
+    <header class="max-w-6xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-center gap-6">
         <div>
-            <h1 class="text-3xl font-black tracking-tighter text-blue-900 italic uppercase">🇵🇹 Portuguese Master</h1>
-            <p class="text-slate-400 font-medium">Interactive Regular Verb Dictionary & Tense Engine</p>
+            <h1 class="text-4xl font-black tracking-tighter text-blue-900 flex items-center gap-3">
+                <span class="text-5xl">🇵🇹</span> PT MASTER COACH
+            </h1>
+            <p class="text-blue-600 font-medium">Smart Conjugation Patterns for Grade 3+</p>
         </div>
-        <nav class="flex gap-8 mt-6 md:mt-0">
-            <button onclick="showSection('engine')" id="tab-engine" class="tab-btn pb-2 text-sm font-bold uppercase tracking-widest tab-active">Tense Engine</button>
-            <button onclick="showSection('dict')" id="tab-dict" class="tab-btn pb-2 text-sm font-bold uppercase tracking-widest">Verb Dictionary</button>
+        <nav class="flex gap-10">
+            <button onclick="switchView('rules')" id="nav-rules" class="tab-btn tab-active py-2">Rules Engine</button>
+            <button onclick="switchView('practice')" id="nav-practice" class="tab-btn py-2">Challenge Mode</button>
+            <button onclick="switchView('dict')" id="nav-dict" class="tab-btn py-2">Mini Dict</button>
         </nav>
     </header>
 
     <main class="max-w-6xl mx-auto">
         
-        <!-- SECTION: TENSE ENGINE -->
-        <div id="section-engine" class="space-y-10">
-            <section class="glass-panel p-8">
-                <div class="grid grid-cols-3 gap-4 md:gap-8 mb-10">
-                    <button onclick="pickEnd('ar', this)" class="end-btn p-8 rounded-3xl bg-blue-50 text-blue-700 text-3xl font-black border-4 border-transparent">-AR</button>
-                    <button onclick="pickEnd('er', this)" class="end-btn p-8 rounded-3xl bg-emerald-50 text-emerald-700 text-3xl font-black border-4 border-transparent">-ER</button>
-                    <button onclick="pickEnd('ir', this)" class="end-btn p-8 rounded-3xl bg-rose-50 text-rose-700 text-3xl font-black border-4 border-transparent">-IR</button>
+        <!-- SECTION 1: RULES ENGINE -->
+        <div id="view-rules" class="space-y-10">
+            <section class="glass-card p-10">
+                <h2 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Step 1: Select Verb Type</h2>
+                <div class="grid grid-cols-3 gap-6 mb-12 text-center text-4xl font-black">
+                    <button onclick="setEnding('ar')" id="end-ar" class="p-10 rounded-3xl bg-blue-50 text-blue-700 shadow-sm border-4 border-transparent">-AR</button>
+                    <button onclick="setEnding('er')" id="end-er" class="p-10 rounded-3xl bg-emerald-50 text-emerald-700 shadow-sm border-4 border-transparent">-ER</button>
+                    <button onclick="setEnding('ir')" id="end-ir" class="p-10 rounded-3xl bg-rose-50 text-rose-700 shadow-sm border-4 border-transparent">-IR</button>
                 </div>
-                <div class="flex flex-wrap gap-2" id="tense-selector"></div>
+                <h2 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6">Step 2: Select Tense</h2>
+                <div id="tense-buttons" class="flex flex-wrap gap-3"></div>
             </section>
 
-            <section id="results" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <div class="bg-white p-10 rounded-[40px] shadow-xl border border-blue-50">
-                    <h2 id="res-title" class="text-2xl font-black text-blue-900 mb-8 uppercase italic"></h2>
-                    <div id="conj-list" class="space-y-4"></div>
+            <div id="rules-output" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="glass-card p-10 border-2 border-blue-50">
+                    <div id="rules-list" class="space-y-4"></div>
                 </div>
-                <div id="ex-list" class="space-y-4"></div>
-            </section>
+                <div id="examples-output" class="space-y-4"></div>
+            </div>
         </div>
 
-        <!-- SECTION: DICTIONARY -->
-        <div id="section-dict" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        <!-- SECTION 2: CHALLENGE MODE -->
+        <div id="view-practice" class="hidden glass-card p-10 text-center">
+            <h2 class="text-3xl font-black text-blue-900 mb-4">Verb Challenge 🏆</h2>
+            <p class="text-slate-400 mb-10">Can you complete the conjugation? Type the correct ending!</p>
+            <div id="quiz-container" class="space-y-6 max-w-md mx-auto"></div>
+            <button onclick="checkAnswers()" class="mt-10 px-12 py-4 bg-blue-900 text-white font-black rounded-2xl uppercase tracking-widest hover:bg-blue-800 transition-colors shadow-xl">Check Answers</button>
+        </div>
+
+        <!-- SECTION 3: MINI DICTIONARY -->
+        <div id="view-dict" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
 
     </main>
 
     <script>
-        let db = null, selEnd = null, selTense = null;
+        let db = null, activeEnd = null, activeTense = null;
         const audio = new Audio();
         const synth = window.speechSynthesis;
 
-        async function init() {
+        async function start() {
             const r = await fetch('portuguese.json?v='+Date.now());
             db = await r.json();
-            const container = document.getElementById('tense-selector');
-            container.innerHTML = db.modules.map(m => `<button onclick="pickTense('${m.tense}', this)" class="tense-btn px-6 py-3 rounded-xl bg-white border border-slate-100 text-slate-500 font-bold text-xs shadow-sm uppercase">${m.tense}</button>`).join('');
             
-            document.getElementById('section-dict').innerHTML = db.verbs.map(v => `
-                <div class="verb-card bg-white p-6 rounded-2xl border border-slate-100 shadow-sm" onclick="speak('${v.word}')">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xl font-black text-blue-900">${v.word}</span>
-                        <span class="text-[9px] font-bold px-2 py-0.5 bg-slate-100 rounded uppercase">-${v.type}</span>
-                    </div>
-                    <p class="text-xs text-slate-400 font-medium italic">${v.meaning}</p>
+            const tb = document.getElementById('tense-buttons');
+            tb.innerHTML = db.modules.map(m => `<button onclick="setTense('${m.tense}', this)" class="tense-btn px-8 py-4 bg-white rounded-2xl font-bold text-sm shadow-sm hover:border-blue-200 transition-all uppercase">${m.tense}</button>`).join('');
+            
+            document.getElementById('view-dict').innerHTML = db.verbs.map(v => `
+                <div class="glass-card p-6 border border-slate-100 cursor-pointer hover:border-blue-200 transition-all" onclick="speak('${v.word}')">
+                    <div class="flex justify-between items-center mb-2"><span class="text-xl font-black text-blue-900">${v.word}</span><span class="text-[9px] font-bold px-2 py-0.5 bg-slate-100 rounded uppercase">-${v.type}</span></div>
+                    <p class="text-xs text-slate-400 italic">${v.meaning}</p>
                 </div>
             `).join('');
         }
 
-        function showSection(id) {
+        function switchView(id) {
             document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
-            document.getElementById('section-' + id).classList.remove('hidden');
+            document.getElementById('view-' + id).classList.remove('hidden');
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
-            document.getElementById('tab-' + id).classList.add('tab-active');
+            document.getElementById('nav-' + id).classList.add('tab-active');
+            if (id === 'practice') loadQuiz();
         }
 
-        function pickEnd(end, btn) {
-            selEnd = end;
-            document.querySelectorAll('.end-btn').forEach(b => b.style.borderColor = 'transparent');
-            btn.style.borderColor = '#0026a1'; update();
+        function setEnding(end) {
+            activeEnd = end;
+            document.querySelectorAll('[id^=end-]').forEach(b => b.style.borderColor = 'transparent');
+            document.getElementById('end-' + end).style.borderColor = '#0026a1';
+            updateUI();
         }
 
-        function pickTense(tense, btn) {
-            selTense = tense;
+        function setTense(t, btn) {
+            activeTense = t;
             document.querySelectorAll('.tense-btn').forEach(b => b.classList.remove('bg-blue-900', 'text-white'));
-            btn.classList.add('bg-blue-900', 'text-white'); update();
+            btn.classList.add('bg-blue-900', 'text-white');
+            updateUI();
         }
 
-        function update() {
-            if(!selEnd || !selTense) return;
-            document.getElementById('results').classList.remove('hidden');
-            const rules = db.regular_rules[selEnd][selTense.includes('現在') ? 'presente' : (selTense.includes('過去') ? 'preterito' : 'futuro')];
-            document.getElementById('res-title').innerText = selTense;
-            const pronouns = ["Eu", "Tu", "Ele/Ela", "Nós", "Eles/Elas"];
-            document.getElementById('conj-list').innerHTML = pronouns.map((p, i) => `
-                <button onclick="speak('Verbo-${rules[i]}')" class="w-full flex justify-between items-center p-5 bg-slate-50 rounded-2xl hover:bg-blue-50 transition-all uppercase">
-                    <span class="text-[10px] font-black text-slate-400">${p}</span>
-                    <span class="text-xl font-black text-blue-900">—<span class="suffix">${rules[i]}</span> 🔊</span>
-                </button>
-            `).join('');
-            const examples = db.modules.find(m => m.tense === selTense).examples;
-            document.getElementById('ex-list').innerHTML = examples.map(ex => `
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-50 flex justify-between items-start gap-4" onclick="speak('${ex.pt.replace(/'/g,"\\'")}')">
-                    <div>
-                        <p class="text-lg font-bold text-slate-800">${ex.pt}</p>
-                        <p class="text-[10px] text-slate-400 italic mt-2">${ex.en}</p>
-                    </div>
-                    <span class="bg-blue-900 text-white p-2 rounded-full text-xs">🔊</span>
+        function updateUI() {
+            if(!activeEnd || !activeTense) return;
+            document.getElementById('rules-output').classList.remove('hidden');
+            const key = activeTense.includes('現在') ? 'presente' : (activeTense.includes('過去') ? 'preterito' : 'futuro');
+            const rules = db.regular_rules[activeEnd][key];
+            const pronouns = [["Eu"], ["Tu"], ["Ele", "Ela", "Você"], ["Nós"], ["Eles", "Elas", "Vocês"]];
+            
+            document.getElementById('rules-list').innerHTML = pronouns.map((p, i) => `
+                <div class="flex justify-between items-center p-5 bg-slate-50/50 rounded-2xl border border-slate-100">
+                    <div class="flex flex-wrap gap-1 max-w-[150px] font-bold text-slate-400 text-[9px] uppercase">${p.join(' · ')}</div>
+                    <button onclick="speak('${rules[i]}')" class="text-2xl font-black text-blue-900">—<span class="text-red-500 underline decoration-2">${rules[i]}</span> 🔊</button>
                 </div>
             `).join('');
+
+            const ex = db.modules.find(m => m.tense === activeTense).examples;
+            document.getElementById('examples-output').innerHTML = ex.map(e => `<div class="glass-card p-6 flex justify-between items-start gap-4 border border-slate-50" onclick="speak('${e.pt.replace(/'/g,"\\'")}')"><div><p class="text-lg font-bold">${e.pt}</p><p class="text-[10px] text-slate-400 italic mt-2">${e.en}</p></div><span class="bg-blue-900 text-white p-2 rounded-full text-xs shadow-lg">🔊</span></div>`).join('');
         }
 
-        // 🔊 HYBRID AUDIO SYSTEM: Cloud Primary + Native Fallback
-        function speak(text) {
-            const clean = text.replace(/Verbo-/g, '');
-            // 1. Try Cloud Audio (Natural)
+        function loadQuiz() {
+            const ends = ['ar', 'er', 'ir'];
+            const tenses = ['presente', 'preterito', 'futuro'];
+            const e = ends[Math.floor(Math.random()*3)];
+            const t = tenses[Math.floor(Math.random()*3)];
+            const rules = db.regular_rules[e][t];
+            const pronouns = ["Eu", "Tu", "Ele/Ela", "Nós", "Eles/Elas"];
+            
+            document.getElementById('quiz-container').innerHTML = `
+                <div class="bg-blue-50 p-4 rounded-xl mb-6 font-bold text-blue-700 uppercase tracking-tighter">Level: ${e.toUpperCase()} - ${t.toUpperCase()}</div>
+                ${pronouns.map((p, i) => `
+                    <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                        <span class="w-20 text-left font-black text-slate-400 uppercase text-xs">${p}</span>
+                        <span class="text-xl font-bold text-blue-900">Verb—</span>
+                        <input type="text" data-ans="${rules[i]}" class="quiz-input flex-grow p-2 border-b-4 border-slate-100 outline-none text-xl font-black text-blue-600 uppercase" placeholder="...">
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function checkAnswers() {
+            document.querySelectorAll('.quiz-input').forEach(i => {
+                if (i.value.toLowerCase().trim() === i.getAttribute('data-ans')) { i.classList.add('correct'); }
+                else { i.classList.add('wrong'); i.value = i.value + " ❌ (Ans: "+i.getAttribute('data-ans')+")"; }
+            });
+        }
+
+        // 🔊 HYBRID AUDIO CORE
+        function speak(txt) {
             audio.pause();
-            audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=pt-PT&q=${encodeURIComponent(clean)}`;
-            
-            const playPromise = audio.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.warn("Cloud Audio Blocked. Using Native Engine.");
-                    // 2. Immediate Native Fallback (Guaranteed Sound)
-                    synth.cancel();
-                    const u = new SpeechSynthesisUtterance(clean);
-                    u.lang = 'pt-PT'; u.rate = 0.8;
-                    synth.speak(u);
-                });
-            }
+            audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=pt-PT&q=${encodeURIComponent(txt)}`;
+            const p = audio.play();
+            if(p !== undefined) p.catch(() => { synth.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang='pt-PT'; u.rate=0.8; synth.speak(u); });
         }
 
-        init();
+        start();
     </script>
 </body>
 </html>
