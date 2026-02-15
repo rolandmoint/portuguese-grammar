@@ -2,77 +2,75 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT Master 3.0 - Kid Friendly Quiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PT Master 3.1 - Mobile Fixed</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --pt-blue: #0026a1; --pt-red: #da121a; }
-        body { background-color: #f0f4f8; font-family: 'Inter', sans-serif; color: #1a365d; height: 100vh; display: flex; flex-direction: column; }
-        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 32px; border: 1px solid white; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); }
-        .tab-btn { transition: all 0.2s; border-bottom: 4px solid transparent; opacity: 0.5; }
+        body { background-color: #f0f4f8; font-family: 'Inter', sans-serif; color: #1a365d; min-height: 100vh; overflow-y: auto; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 24px; border: 1px solid white; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
+        .tab-btn { transition: all 0.2s; border-bottom: 3px solid transparent; opacity: 0.5; font-size: 10px; }
         .tab-active { border-bottom-color: var(--pt-blue); opacity: 1; font-weight: 900; color: var(--pt-blue); }
-        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; background: white; }
-        .option-btn:hover { border-color: var(--pt-blue); background: #f8fafc; }
-        .option-btn:active { transform: scale(0.95); }
+        .option-btn { transition: all 0.2s; border: 2px solid #f1f5f9; background: white; width: 100%; text-align: center; }
+        .option-btn:hover { border-color: var(--pt-blue); }
         .correct { background: #10b981 !important; color: white !important; border-color: #059669 !important; }
         .wrong { background: #ef4444 !important; color: white !important; border-color: #dc2626 !important; }
-        #quiz-score { font-family: 'Monaco', monospace; }
+        .suffix { color: var(--pt-red); font-weight: 900; text-decoration: underline; }
     </style>
 </head>
-<body class="p-4 md:p-12">
+<body class="p-3 md:p-12">
 
-    <header class="max-w-5xl mx-auto mb-10 flex justify-between items-center bg-white/50 p-6 rounded-2xl">
-        <h1 class="text-2xl font-black text-blue-900 tracking-tighter uppercase italic">PT Master 3.0</h1>
-        <nav class="flex gap-6">
-            <button onclick="switchView('rules')" id="nav-rules" class="tab-btn tab-active text-xs font-bold uppercase tracking-widest">Learn</button>
-            <button onclick="switchView('practice')" id="nav-practice" class="tab-btn text-xs font-bold uppercase tracking-widest">The Quiz!</button>
-            <button onclick="switchView('dict')" id="nav-dict" class="tab-btn text-xs font-bold uppercase tracking-widest">Dict</button>
+    <!-- COMPACT HEADER -->
+    <header class="max-w-4xl mx-auto mb-6 flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm">
+        <h1 class="text-xl font-black text-blue-900 tracking-tighter italic">PT Master 3.1</h1>
+        <nav class="flex gap-4">
+            <button onclick="switchView('rules')" id="nav-rules" class="tab-btn tab-active py-1 uppercase">Learn</button>
+            <button onclick="switchView('practice')" id="nav-practice" class="tab-btn py-1 uppercase">Quiz</button>
+            <button onclick="switchView('dict')" id="nav-dict" class="tab-btn py-1 uppercase">Dict</button>
         </nav>
     </header>
 
-    <main class="max-w-5xl mx-auto flex-grow overflow-y-auto w-full">
+    <main class="max-w-4xl mx-auto pb-20">
         
         <!-- SECTION 1: LEARN -->
-        <div id="view-rules" class="space-y-8">
-            <section class="glass-card p-8">
-                <div class="grid grid-cols-3 gap-4 mb-8">
-                    <button onclick="setEnding('ar', this)" id="end-ar" class="p-6 rounded-2xl bg-blue-50 text-blue-700 text-3xl font-black border-4 border-transparent">-AR</button>
-                    <button onclick="setEnding('er', this)" id="end-er" class="p-6 rounded-2xl bg-emerald-50 text-emerald-700 text-3xl font-black border-4 border-transparent">-ER</button>
-                    <button onclick="setEnding('ir', this)" id="end-ir" class="p-6 rounded-2xl bg-rose-50 text-rose-700 text-3xl font-black border-4 border-transparent">-IR</button>
+        <div id="view-rules" class="space-y-6">
+            <section class="glass-card p-6">
+                <div class="grid grid-cols-3 gap-3 mb-6">
+                    <button onclick="setEnding('ar', this)" id="end-ar" class="p-4 rounded-xl bg-blue-50 text-blue-700 text-xl font-black border-2 border-transparent">AR</button>
+                    <button onclick="setEnding('er', this)" id="end-er" class="p-4 rounded-xl bg-emerald-50 text-emerald-700 text-xl font-black border-2 border-transparent">ER</button>
+                    <button onclick="setEnding('ir', this)" id="end-ir" class="p-4 rounded-xl bg-rose-50 text-rose-700 text-xl font-black border-2 border-transparent">IR</button>
                 </div>
-                <div id="tense-buttons" class="flex flex-wrap gap-2"></div>
+                <div id="tense-buttons" class="flex flex-wrap gap-2 justify-center"></div>
             </section>
-            <div id="rules-output" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div id="rules-list" class="space-y-3"></div>
+            <div id="rules-output" class="hidden space-y-6">
+                <div id="rules-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
                 <div id="examples-output" class="space-y-3"></div>
             </div>
         </div>
 
-        <!-- SECTION 2: THE QUIZ (MCQ MODE) -->
-        <div id="view-practice" class="hidden h-full flex flex-col items-center">
-            <div class="w-full max-w-lg glass-card p-10 text-center relative overflow-hidden">
-                <div class="flex justify-between items-center mb-10">
-                    <span id="quiz-score" class="bg-amber-100 text-amber-700 px-4 py-1 rounded-full text-xs font-black">STARS: 0</span>
-                    <span id="quiz-progress" class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Question 1</span>
+        <!-- SECTION 2: THE QUIZ (COMPACT) -->
+        <div id="view-practice" class="hidden flex flex-col items-center">
+            <div class="w-full glass-card p-6 md:p-10 text-center">
+                <div class="flex justify-between items-center mb-6">
+                    <span id="quiz-score" class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-black uppercase">Stars: 0</span>
+                    <span id="quiz-progress" class="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Q1</span>
                 </div>
 
-                <div id="quiz-question-area" class="space-y-8">
-                    <div class="text-slate-400 text-xs font-black uppercase tracking-widest" id="q-tense">Loading...</div>
-                    <div class="flex items-center justify-center gap-4">
-                        <span class="text-2xl font-black text-slate-400" id="q-pronoun">Eu</span>
-                        <span class="text-4xl font-black text-blue-900 border-b-4 border-amber-200">Verb—</span>
-                    </div>
-                    
-                    <div id="options-grid" class="grid grid-cols-1 gap-3 pt-6"></div>
+                <div id="q-tense" class="text-slate-400 text-[10px] font-black uppercase mb-2">Loading...</div>
+                <div class="flex items-center justify-center gap-2 mb-8">
+                    <span class="text-xl font-black text-slate-400" id="q-pronoun">Eu</span>
+                    <span class="text-2xl font-black text-blue-900 border-b-2 border-amber-200">Verb—</span>
                 </div>
+                
+                <div id="options-grid" class="grid grid-cols-2 gap-3"></div>
 
-                <div id="feedback" class="mt-8 text-sm font-black uppercase hidden h-10 flex items-center justify-center"></div>
+                <div id="feedback" class="mt-6 text-xs font-black uppercase hidden"></div>
             </div>
-            <button id="next-q-btn" onclick="nextQuestion()" class="mt-8 hidden px-10 py-4 bg-blue-900 text-white font-black rounded-2xl shadow-xl uppercase animate-bounce">Next Challenge &rarr;</button>
+            <button id="next-q-btn" onclick="nextQuestion()" class="mt-6 px-10 py-4 bg-blue-900 text-white font-black rounded-2xl shadow-lg uppercase hidden">Next Question &rarr;</button>
         </div>
 
         <!-- SECTION 3: DICT -->
-        <div id="view-dict" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pb-20"></div>
+        <div id="view-dict" class="hidden grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
 
     </main>
 
@@ -84,8 +82,8 @@
         async function start() {
             const r = await fetch('portuguese.json?v='+Date.now());
             db = await r.json();
-            document.getElementById('tense-buttons').innerHTML = db.modules.map(m => `<button onclick="setTense('${m.tense}', this)" class="tense-btn px-6 py-3 bg-white rounded-xl font-bold text-[10px] shadow-sm uppercase tracking-widest">${m.tense}</button>`).join('');
-            document.getElementById('view-dict').innerHTML = db.verbs.map(v => `<div class="glass-card p-6 cursor-pointer hover:border-blue-200" onclick="speak('${v.word}')"><div class="flex justify-between items-center mb-2"><span class="text-lg font-black text-blue-900">${v.word}</span><span class="text-[8px] font-bold px-2 py-0.5 bg-slate-100 rounded uppercase">-${v.type}</span></div><p class="text-[10px] text-slate-400 italic">${v.meaning}</p></div>`).join('');
+            document.getElementById('tense-buttons').innerHTML = db.modules.map(m => `<button onclick="setTense('${m.tense}', this)" class="tense-btn px-4 py-2 bg-white rounded-lg font-bold text-[9px] shadow-sm uppercase">${m.tense}</button>`).join('');
+            document.getElementById('view-dict').innerHTML = db.verbs.map(v => `<div class="glass-card p-4 border border-slate-100" onclick="speak('${v.word}')"><div class="flex justify-between items-center mb-1"><span class="text-sm font-black text-blue-900">${v.word}</span><span class="text-[7px] font-bold px-1.5 py-0.5 bg-slate-100 rounded">-${v.type}</span></div><p class="text-[9px] text-slate-400 italic">${v.meaning}</p></div>`).join('');
         }
 
         function switchView(id) {
@@ -111,42 +109,29 @@
             document.getElementById('rules-output').classList.remove('hidden');
             const key = activeTense.includes('現在') ? 'presente' : (activeTense.includes('過去') ? 'preterito' : 'futuro');
             const rules = db.regular_rules[activeEnd][key];
-            const p = [["Eu"], ["Tu"], ["Ele/Ela/Você"], ["Nós"], ["Eles/Elas/Vocês"]];
-            document.getElementById('rules-list').innerHTML = p.map((pr, i) => `<div class="glass-card p-4 flex justify-between items-center"><span class="font-bold text-slate-400 text-[10px] uppercase">${pr.join(' · ')}</span><button onclick="speak('${rules[i]}')" class="text-xl font-bold text-blue-900">—<span class="text-red-500 underline">${rules[i]}</span> 🔊</button></div>`).join('');
+            const p = [["Eu"], ["Tu"], ["Ele/Ela"], ["Nós"], ["Eles/Elas"]];
+            document.getElementById('rules-list').innerHTML = p.map((pr, i) => `<div class="glass-card p-3 flex justify-between items-center"><span class="font-bold text-slate-400 text-[9px] uppercase">${pr[0]}</span><button onclick="speak('${rules[i]}')" class="text-lg font-bold text-blue-900">—<span class="suffix">${rules[i]}</span> 🔊</button></div>`).join('');
             const ex = db.modules.find(m => m.tense === activeTense).examples;
-            document.getElementById('examples-output').innerHTML = ex.map(e => `<div class="glass-card p-5 flex justify-between items-start gap-4" onclick="speak('${e.pt.replace(/'/g,"\\'")}')"><div><p class="font-bold text-slate-700">${e.pt}</p><p class="text-[10px] text-slate-400 italic">${e.en}</p></div><span class="bg-blue-900 text-white rounded-full p-1.5 text-[10px]">🔊</span></div>`).join('');
+            document.getElementById('examples-output').innerHTML = ex.map(e => `<div class="glass-card p-4 flex justify-between items-start border border-slate-50" onclick="speak('${e.pt.replace(/'/g,"\\'")}')"><div class="flex-grow pr-2"><p class="text-sm font-bold">${e.pt}</p><p class="text-[9px] text-slate-400 italic">${e.en}</p></div><span class="bg-blue-900 text-white rounded-full p-1.5 text-[8px] shrink-0">🔊</span></div>`).join('');
         }
 
-        // 🏆 QUIZ LOGIC (MCQ)
         function nextQuestion() {
             document.getElementById('next-q-btn').classList.add('hidden');
             document.getElementById('feedback').classList.add('hidden');
-            document.getElementById('quiz-progress').innerText = `Challenge ${qIndex++}`;
-            
-            const ends = ['ar', 'er', 'ir'];
-            const tenses = ['presente', 'preterito', 'futuro'];
-            const e = ends[Math.floor(Math.random()*3)];
-            const t = tenses[Math.floor(Math.random()*3)];
-            const ruleIdx = Math.floor(Math.random()*5);
+            document.getElementById('quiz-progress').innerText = `Q${qIndex++}`;
+            const ends = ['ar', 'er', 'ir'], tenses = ['presente', 'preterito', 'futuro'];
+            const e = ends[Math.floor(Math.random()*3)], t = tenses[Math.floor(Math.random()*3)], ruleIdx = Math.floor(Math.random()*5);
             const ans = db.regular_rules[e][t][ruleIdx];
             const pronouns = ["Eu", "Tu", "Ele/Ela/Você", "Nós", "Eles/Elas/Vocês"];
-            
-            document.getElementById('q-tense').innerText = `${e.toUpperCase()} Type - ${t.toUpperCase()}`;
+            document.getElementById('q-tense').innerText = `${e.toUpperCase()} - ${t.toUpperCase()}`;
             document.getElementById('q-pronoun').innerText = pronouns[ruleIdx];
-
-            // Generate Options
             let options = [ans];
             while(options.length < 4) {
-                const randomEnd = ends[Math.floor(Math.random()*3)];
-                const randomTense = tenses[Math.floor(Math.random()*3)];
-                const wrongAns = db.regular_rules[randomEnd][randomTense][Math.floor(Math.random()*5)];
-                if(!options.includes(wrongAns)) options.push(wrongAns);
+                const wAns = db.regular_rules[ends[Math.floor(Math.random()*3)]][tenses[Math.floor(Math.random()*3)]][Math.floor(Math.random()*5)];
+                if(!options.includes(wAns)) options.push(wAns);
             }
             options.sort(() => Math.random() - 0.5);
-
-            document.getElementById('options-grid').innerHTML = options.map(opt => `
-                <button onclick="answer(this, '${ans}')" class="option-btn p-5 rounded-2xl font-black text-blue-900 text-xl shadow-sm uppercase">${opt}</button>
-            `).join('');
+            document.getElementById('options-grid').innerHTML = options.map(opt => `<button onclick="answer(this, '${ans}')" class="option-btn p-4 rounded-xl font-black text-blue-900 text-sm shadow-sm uppercase">${opt}</button>`).join('');
         }
 
         function answer(btn, correct) {
@@ -154,14 +139,14 @@
             const res = btn.innerText.toLowerCase().trim() === correct.toLowerCase().trim();
             btn.classList.add(res ? 'correct' : 'wrong');
             const f = document.getElementById('feedback');
-            f.innerText = res ? "Excellent! +1 Star 🌟" : `Oh no! Accurate ending is: ${correct}`;
+            f.innerText = res ? "Correct! +1 Star 🌟" : `Correct answer: ${correct}`;
             f.style.color = res ? "#10b981" : "#ef4444";
             f.classList.remove('hidden');
             if(res) { score++; updateScore(); speak('Excelente'); } else { speak('Oh não'); }
             document.getElementById('next-q-btn').classList.remove('hidden');
         }
 
-        function updateScore() { document.getElementById('quiz-score').innerText = `STARS: ${score}`; }
+        function updateScore() { document.getElementById('quiz-score').innerText = `Stars: ${score}`; }
 
         function speak(txt) {
             audio.pause();
